@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  camera: 
   uno_active_liveness:
     path: /Users/qoin/Documents/Asset Autentika Liveness/V3/Active Liveness V2.1/Liveness_kit/uno_active_liveness
 
