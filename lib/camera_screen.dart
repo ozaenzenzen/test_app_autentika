@@ -137,9 +137,11 @@ class _CameraScreenState extends State<CameraScreen> {
 
       // await cameraController!.stopImageStream();
 
-      List<ByteData> newData = [Helper.concatenatePlanesByteData2(image.planes)];
+      // List<ByteData> newData = [Helper.concatenatePlanesByteData2(image.planes)];
+      List<ByteData> newData = Helper.concatenatePlanesByteData2(image.planes);
 
       debugPrint('newData ${newData[0].buffer.lengthInBytes}');
+      // debugPrint('newData $newData');
 
       var getXFrameData = getXFrame(newData, 4);
       // debugPrint('getXFrameData $getXFrameData');
@@ -149,9 +151,10 @@ class _CameraScreenState extends State<CameraScreen> {
       // }).whenComplete(() => null);
 
       var outputLiveness = await launchLiveness(getXFrameData, image.width, image.height);
-      debugPrint('status sekarang ${outputLiveness}');
+      // debugPrint('status sekarang ${outputLiveness}');
+      debugPrint('status sekarang $outputLiveness');
 
-      await cameraController!.stopImageStream();
+      // await cameraController!.stopImageStream();
     });
   }
 

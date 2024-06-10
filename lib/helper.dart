@@ -18,14 +18,21 @@ class Helper {
     return allBytes.done();
   }
 
-  static ByteData concatenatePlanesByteData2(List<Plane> planes) {
-    List<Uint8List> conv = planes.map((e) {
-      return e.bytes;
+  static List<ByteData> concatenatePlanesByteData2(List<Plane> planes) {
+    List<ByteData> conv = planes.map((e) {
+      return ByteData.view(e.bytes.buffer);
     }).toList();
-    final WriteBuffer allBytes = WriteBuffer();
-    for (var plane in conv) {
-      allBytes.putUint8List(plane);
-    }
-    return allBytes.done();
+
+    return conv;
+
+    // List<Uint8List> conv = planes.map((e) {
+    //   return e.bytes;
+    // }).toList();
+
+    // final WriteBuffer allBytes = WriteBuffer();
+    // for (var plane in conv) {
+    //   allBytes.putUint8List(plane);
+    // }
+    // return [allBytes.done()];
   }
 }
