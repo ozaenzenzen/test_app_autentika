@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:test_app_authentika/helper.dart';
+import 'package:test_app_authentika/helper2.dart';
 import 'package:uno_active_liveness/uno_active_liveness.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -93,7 +95,6 @@ class _CameraScreenState extends State<CameraScreen> {
       debugPrint('Data is not received');
     }
   }
-  
 
   List<Uint8List> getXFrame(List<ByteData> frames, int xFrame) {
     return UnoActiveLiveness().getXFrame(frames, xFrame);
@@ -125,36 +126,23 @@ class _CameraScreenState extends State<CameraScreen> {
 
     await Future.delayed(const Duration(seconds: 2));
     await cameraController!.startImageStream((CameraImage image) async {
-      debugPrint('stream start');
-      debugPrint('image.format ${image.format.raw}');
-      debugPrint('image.height ${image.height}');
-      debugPrint('image.width ${image.width}');
-      // debugPrint('image.planes ${image.planes[0].bytes}');
-
-      // List<ByteData> newData = image.planes.map((e) {
-      //   return ByteData.view(e.bytes.buffer);
-      // }).toList();
-
-      // await cameraController!.stopImageStream();
-
-      // List<ByteData> newData = [Helper.concatenatePlanesByteData2(image.planes)];
+      // convert planes ke bytedata (kebutuhan untuk getXFrame)
       List<ByteData> newData = Helper.concatenatePlanesByteData2(image.planes);
 
-      debugPrint('newData ${newData[0].buffer.lengthInBytes}');
-      // debugPrint('newData $newData');
-
-      var getXFrameData = getXFrame(newData, 4);
+      // logic autentika untuk pooling (byte data dan jumlah frame)
+      // var getXFrameData = getXFrame(newData, 4);
+      var getXFrameData = await compute(
+        getXFrameV2,
+        SupportGetXFrame(
+          frames: newData,
+          xFrame: 4,
+        ),
+      );
       // debugPrint('getXFrameData $getXFrameData');
 
-      // launchLiveness(getXFrameData, image.width, image.height).then((value) {
-      //   debugPrint('status sekarang $value');
-      // }).whenComplete(() => null);
-
+      // logic autentika untuk dapatkan hasil deteksi
       var outputLiveness = await launchLiveness(getXFrameData, image.width, image.height);
-      // debugPrint('status sekarang ${outputLiveness}');
       debugPrint('status sekarang $outputLiveness');
-
-      // await cameraController!.stopImageStream();
     });
   }
 
